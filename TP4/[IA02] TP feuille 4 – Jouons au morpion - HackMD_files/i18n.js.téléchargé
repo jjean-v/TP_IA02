@@ -1,0 +1,26 @@
+window.locales = {"revision":{"download":"Télécharger","revert":"Revenir en arrière"},"common":{"or":"OU","cancel":"Annuler","ok":"OK","got-it":"Got it"},"help":{"title":"Aide","contact":{"title":"Contacts","messenger":"Talk to us","github":"Signaler un problème","email":"Envoyez-nous un mail"},"documents":"Documents","yaml-meta":"Métadonnées YAML","slide":"Exemple de présentation","cheatsheet":"Pense-bête","example":"Exemple","syntax":{"h1":"En-tête","ul":"Liste à puce","ol":"List numérotée","todo":"Liste de tâches","blockquote":"Citation","b":"Gras","i":"Italique","strike":"Barré","ins":"Souligné","mark":"Surligné","anchor":"Lien","img":"Image","code":"Code","embeded":"Externes","alert":"Ceci est un texte d'alerte."}},"signin":{"via":"Se connecter depuis {{text}}"},"refresh":{"title":"Cette page doit être rechargée","incompatible":{"title":"Vous avez une version client incompatible.","content":"Recharger pour mettre à jour."},"upgrade":{"title":"Nouvelle version disponible !","note":"Voir les commentaires de version ici","content":"Recharger pour bénéficier des nouvelles fonctionnalités."},"auth":{"title":"Votre statut utilisateur a changé.","content":"Recharger pour avoir le nouveau statut utilisateur."},"refresh":"Recharger"},"clipboard":{"title":"Importer depuis le presse-papier","content":"Coller votre markdown ou votre page web ici...","clear":"Vider","import":"Importer"},"locked":{"title":"Cette note est verrouillée","content":"Désolé, seulement le propriétaire peut éditer cette note."},"limit":{"title":"Atteindre la limite","content1":"Désolé, vous avez atteint la longueur maximale que cette note peut avoir.","content2":"Merci de réduire le contenu ou de le diviser en plusieurs notes!"},"gist-import":{"title":"Importer depuis Gist","content":"Coller l'URL de votre Gist ici..."},"snippet-import":{"title":"Importer depuis Snippet","project":{"placeholder":"Sélectionner depuis les projets disponibles"},"snippet":{"placeholder":"Sélectionner depuis les Snippets disponibles"}},"snippet-export":{"title":"Exporter vers Snippet","visibility":{"placeholder":"Sélectionner le niveau de visibilité"},"export":"Exporter"},"delete":{"title":"Ëtes-vous sûr ?","yes":"Oui, je suis sûr !"},"header":{"import":{"clipboard":"Presse-papier"},"download":{"raw-html":"HTML brut"},"modes":{"edit":"Éditer","both":"Les deux","view":"Voir"},"help":"Help","menu":"Menu","intro":"Intro"},"footer":{"tos":"Terms of Service","releases":"Versions","terms":"Terms"},"site":{"meta":{"description":"Le meilleur moyen d'écrire et partager votre savoir en markdown.","og":{"title-suffix":"Notes collaboratives en markdown"}}}};
+
+
+document.addEventListener("DOMContentLoaded", function () {
+    if (jQuery && $.fn.select2) {
+        (function(n){"use strict";n.fn.select2.locales.fr={formatMatches:function(e){return e+" r\xE9sultats sont disponibles, utilisez les fl\xE8ches haut et bas pour naviguer."},formatNoMatches:function(){return"Aucun r\xE9sultat trouv\xE9"},formatInputTooShort:function(e,r){var t=r-e.length;return"Saisissez "+t+" caract\xE8re"+(t==1?"":"s")+" suppl\xE9mentaire"+(t==1?"":"s")},formatInputTooLong:function(e,r){var t=e.length-r;return"Supprimez "+t+" caract\xE8re"+(t==1?"":"s")},formatSelectionTooBig:function(e){return"Vous pouvez seulement s\xE9lectionner "+e+" \xE9l\xE9ment"+(e==1?"":"s")},formatLoadMore:function(e){return"Chargement de r\xE9sultats suppl\xE9mentaires\u2026"},formatSearching:function(){return"Recherche en cours\u2026"}},n.extend(n.fn.select2.defaults,n.fn.select2.locales.fr)})(jQuery);
+
+        // overwrite format functions of already inited select2 instances
+        var st2s = $('.select2-container').toArray();
+        for (var i = 0, l = st2s.length; i < l; i++) {
+            var st2 = st2s[i];
+            var data = $(st2).data('select2');
+            if (!data || !data.opts) continue;
+            var opts = data.opts;
+            opts.formatNoMatches = $.fn.select2.defaults.formatNoMatches;
+            opts.formatInputTooShort = $.fn.select2.defaults.formatInputTooShort;
+            opts.formatInputTooLong = $.fn.select2.defaults.formatInputTooLong;
+            opts.formatSelectionTooBig = $.fn.select2.defaults.formatSelectionTooBig;
+            opts.formatLoadMore = $.fn.select2.defaults.formatLoadMore;
+            opts.formatSearching = $.fn.select2.defaults.formatSearching;
+        }
+    }
+});
+
+
+
