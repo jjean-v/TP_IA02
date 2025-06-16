@@ -160,15 +160,23 @@ def strategy_brain(grid: State, player: Player) -> Action:
     return t
 
 
-def tictactoe(strategy_X: Strategy, strategy_O: Strategy, debug: bool = False) -> Score:
+def tictactoe(strategy_X: Strategy, strategy_O: Strategy, alpha_beta : bool, debug: bool = False) -> Score:
+    # Utiliser pour savoir si une stratégie alpha beta est utilisé, il faut donc rajouter des paramètres dans l'appel de la fonction
     grid = EMPTY_GRID
     current_player = X
     strategies = {X: strategy_X, O: strategy_O}
+    # Pour le minmax
+    alpha = -math.inf
+    beta = math.inf
     while not final(grid):
         if debug:
             pprint(grid)
 
-        action_joueur = strategies[current_player](grid, current_player)
+        if (alpha_beta):
+            action_joueur = strategies[current_player](grid, current_player,alpha, beta)
+        else :
+            action_joueur = strategies[current_player](grid, current_player)
+
         grid = play(grid, current_player, action_joueur)
 
         if current_player == X:
@@ -289,12 +297,68 @@ def strategy_minmax_random(grid: State, player: Player) -> Action:
     _,list_action = minmax_actions(grid , player)
     return list_action[randint(0,len(list_action)-1)]
 
+
+def memoize_alpha_beta(
+    f: Callable[[State, Player], tuple[Score, Action]]
+) -> Callable[[State, Player], tuple[Score, Action]]:
+    cache = {} # closure
+    def g(state: State, player: Player,a : float, b:float):
+        if state in cache:
+            return cache[state]
+        val = f(state, player,a,b)
+        cache[state] = val
+        return val
+    return g
+
+@memoize_alpha_beta
+def alpha_beta(grid: State, player: Player, alpha : float, beta : float) -> tuple[Score, Action]:
+    if final(grid):
+        best_action = -1, -1
+        return score(grid),best_action
+
+    elif player == X:
+        #best_coup = -1,-1
+        best_value = -math.inf
+        for coup in legals(grid):
+            v,_ = alpha_beta(play(grid, X, coup), O,alpha,beta)
+            alpha = max(alpha,v)
+            if alpha >= beta:
+                best_value = v
+                best_action = coup  
+                break  
+            if v > best_value:
+                best_value = v
+                best_action = coup    
+        return best_value, best_action
+
+    else:  # Player 0
+        best_value = math.inf
+        #best_coup = -1,-1
+        for coup in legals(grid):
+            v,_ = alpha_beta(play(grid, O, coup), X,alpha,beta)
+            beta = min(v,beta)
+
+            if alpha >= beta:
+                best_value = v
+                best_action = coup
+                break
+            if v < best_value:
+                best_value = v
+                best_action = coup
+        return best_value, best_action
+
+
+def strategy_alpha_beta(grid: State, player: Player, alpha: float, beta: float) -> Action:
+    _,action = alpha_beta(grid,player, alpha, beta)
+    return action
+
+
 def main():
     GRID_1: Grid = ((0, 0, O), (0, X, 0), (0, 0, 0))
     # pprint(GRID_1)
     # strategy_brain(GRID_1,X)
 
-    tictactoe(strategy_minmax_random,strategy_minmax_random, True)
+    tictactoe(strategy_alpha_beta,strategy_alpha_beta, True, True)
 
 
 
